@@ -1,184 +1,153 @@
-# ATM Transaction Sequence Simulation Using Python
+# Progressive Electricity Billing
 
 ## 1. Problem Statement
 
-The ATM Transaction Sequence Simulation is a Python program that simulates basic ATM operations by processing a sequence of deposits and withdrawals.
+Develop a Python program to calculate household electricity bills using progressive consumption slabs, fixed charges, surcharges, and rebates. The program should process electricity consumption for several months, calculate each month's bill, compare bills across months, and identify unusual increases in electricity costs.
 
-The program starts with an initial account balance and processes each transaction entered by the user. It validates the transaction amount, checks the available balance, and enforces a maximum withdrawal limit.
+The program should:
+- Accept monthly electricity consumption in kilowatt-hours (kWh).
+- Calculate energy charges using progressive consumption slabs.
+- Add fixed monthly charges.
+- Apply a surcharge when consumption exceeds a specified limit.
+- Apply a rebate when consumption is below a specified limit.
+- Calculate the final bill for each month.
+- Compare monthly bills and calculate percentage changes.
+- Identify unusual increases in electricity bills.
 
-The program must perform the following operations:
+**Assumptions for this program:**
 
-1. Accept the initial account balance.
-2. Allow the user to enter a sequence of deposit and withdrawal transactions.
-3. **Deposit:** Add the deposit amount to the current balance if the amount is valid.
-4. **Withdrawal:** Deduct the withdrawal amount only if it is valid, does not exceed the withdrawal limit, and does not exceed the available balance.
-5. **Reject invalid transactions:** Reject zero or negative amounts, withdrawals exceeding the limit, and withdrawals exceeding the available balance.
-6. Maintain the account balance after every successful transaction.
-7. Display a transaction summary containing the total number of transactions, successful transactions, rejected transactions, total deposits, total withdrawals, and final account balance.
+| Electricity consumption slab | Rate per kWh |
+|---|---:|
+| First 100 units | ₹2.00 |
+| Next 100 units (101–200) | ₹3.00 |
+| Next 300 units (201–500) | ₹5.00 |
+| Above 500 units | ₹7.00 |
 
-The program continues processing transactions until the user chooses to exit.
+Additional billing rules:
+- Fixed monthly charge: ₹100.
+- Surcharge: 10% of energy charges when consumption exceeds 500 units.
+- Rebate: 5% of energy charges when consumption is below 100 units.
+- An increase of more than 20% compared with the previous month's bill is considered unusual.
+- The rebate and surcharge are applied to energy charges only.
 
-### Assumptions
-
-- The initial balance must be non-negative.
-- The maximum withdrawal limit per transaction is ₹10,000.
-- Deposits must be positive amounts.
-- Withdrawals must be positive amounts.
-- A withdrawal is permitted only when the amount is within the withdrawal limit and sufficient funds are available.
-- Rejected transactions do not change the account balance.
-
----
+*These rates and rules are illustrative and do not represent any specific electricity provider's tariff.*
 
 ## 2. Algorithm
 
-**Step 1:** Start the program.
-
-**Step 2:** Read the initial account balance and validate that it is non-negative.
-
-**Step 3:** Initialize the following variables:
-- `balance` = initial balance
-- `total_deposits` = 0
-- `total_withdrawals` = 0
-- `successful_transactions` = 0
-- `rejected_transactions` = 0
-- `total_transactions` = 0
-
-**Step 4:** Display the ATM menu:
-- Option 1: Deposit
-- Option 2: Withdraw
-- Option 3: Display balance
-- Option 4: Exit and display summary
-
-**Step 5:** Read the user's choice.
-
-**Step 6:** If the user selects Deposit:
-- Read the deposit amount.
-- If the amount is positive, add it to the balance and update the total deposits and successful transaction count.
-- Otherwise, reject the transaction and update the rejected transaction count.
-
-**Step 7:** If the user selects Withdraw:
-- Read the withdrawal amount.
-- If the amount is not positive, reject the transaction.
-- Otherwise, check whether the amount exceeds ₹10,000.
-- If it exceeds the limit, reject the transaction.
-- Otherwise, check whether sufficient balance is available.
-- If sufficient funds are available, deduct the amount and update the total withdrawals and successful transaction count.
-- Otherwise, reject the transaction.
-
-**Step 8:** If the user selects Display Balance, display the current balance.
-
-**Step 9:** If the user selects Exit, display the transaction summary and terminate the program.
-
-**Step 10:** If the user enters an invalid menu option, display an error message and return to the menu.
-
-**Step 11:** Repeat Steps 5–10 until the user exits.
-
-**Step 12:** Stop the program.
+1. Start the program.
+2. Input the number of months to analyze.
+3. For each month:
+   - Enter the month name and electricity consumption.
+   - Validate that consumption is nonnegative.
+   - Calculate energy charges using progressive slabs.
+   - Add the fixed monthly charge.
+   - Apply the surcharge if consumption exceeds 500 units.
+   - Apply the rebate if consumption is below 100 units.
+   - Calculate the final bill.
+   - Store the monthly consumption and bill amount.
+4. Compare each month's bill with the previous month's bill.
+5. Calculate the percentage increase or decrease.
+6. If the bill increases by more than 20%, flag it as an unusual increase.
+7. Display the monthly bill breakdown and comparison summary.
+8. Stop the program.
 
 ## 3. Flowchart 
-```mermaid
-    A([Start]) --> B[Enter Initial Balance]
-    B --> C[Display ATM Menu]
-    C --> D{Select Operation}
 
-    D -->|Deposit| E[Validate Amount]
-    E --> F{Valid Amount?}
-    F -->|Yes| G[Add to Balance]
-    F -->|No| H[Reject Transaction]
-
-    D -->|Withdraw| I[Check Amount, Limit and Balance]
-    I --> J{Valid Withdrawal?}
-    J -->|Yes| K[Deduct from Balance]
-    J -->|No| H
-
-    G --> C
-    K --> C
-    H --> C
-
-    D -->|Check Balance| L[Display Balance]
-    L --> C
-
-    D -->|Exit| M[Display Transaction Summary]
-    M --> N([Stop])
+```mermaid 
+    A([Start]) --> B[/Enter number of months/]
+    B --> C[Initialize monthly records]
+    C --> D[/Enter month and consumption/]
+    D --> E{Consumption valid?}
+    E -- No --> F[Display error]
+    F --> Z([Stop])
+    E -- Yes --> G[Calculate progressive energy charges]
+    G --> H[Add fixed charge]
+    H --> I{Consumption above 500?}
+    I -- Yes --> J[Apply 10% surcharge]
+    I -- No --> K{Consumption below 100?}
+    J --> L[Calculate final bill]
+    K -- Yes --> M[Apply 5% rebate]
+    K -- No --> L
+    M --> L
+    L --> N[Store monthly bill]
+    N --> O{More months?}
+    O -- Yes --> D
+    O -- No --> P[Compare consecutive monthly bills]
+    P --> Q{Increase greater than 20%?}
+    Q -- Yes --> R[Flag unusual increase]
+    Q -- No --> S[Record normal change]
+    R --> T[Display monthly and comparison reports]
+    S --> T
+    T --> Z
 ```
+
+
+
 ## 5. Sample Input
 
-The following example demonstrates successful deposits, successful withdrawals, an invalid deposit, a withdrawal exceeding the limit, and a withdrawal with insufficient funds
-Enter initial balance (Rs.): 5000
+Enter number of months: 3
 
-===== ATM MENU =====
-1. Deposit
-2. Withdraw
-3. Check Balance
-4. Exit
+--- Month 1 ---
+Enter month name: January
+Enter electricity consumption (kWh): 150
 
-Enter your choice (1-4): 1
-Enter deposit amount (Rs.): 2000
+--- Month 2 ---
+Enter month name: February
+Enter electricity consumption (kWh): 180
 
-Enter your choice (1-4): 2
-Enter withdrawal amount (Rs.): 1500
-
-Enter your choice (1-4): 1
-Enter deposit amount (Rs.): -500
-
-Enter your choice (1-4): 2
-Enter withdrawal amount (Rs.): 12000
-
-Enter your choice (1-4): 2
-Enter withdrawal amount (Rs.): 7000
-
-Enter your choice (1-4): 3
-
-Enter your choice (1-4): 4
+--- Month 3 ---
+Enter month name: March
+Enter electricity consumption (kWh): 300
 
 
 ## 6. Sample Output
 
 
-Enter initial balance (Rs.): 5000
+PROGRESSIVE ELECTRICITY BILLING
 
-===== ATM MENU =====
-1. Deposit
-2. Withdraw
-3. Check Balance
-4. Exit
+========== MONTHLY BILL DETAILS ==========
 
-Enter your choice (1-4): 1
-Enter deposit amount (Rs.): 2000
-Deposit successful!
-Current balance: Rs. 7000.00
+Month: January
+Consumption: 150.00 kWh
+Energy Charges: Rs. 350.00
+Fixed Charges: Rs. 100.00
+Surcharge: Rs. 0.00
+Rebate: Rs. 0.00
+Final Bill: Rs. 450.00
 
-Enter your choice (1-4): 2
-Enter withdrawal amount (Rs.): 1500
-Withdrawal successful!
-Current balance: Rs. 5500.00
+Month: February
+Consumption: 180.00 kWh
+Energy Charges: Rs. 440.00
+Fixed Charges: Rs. 100.00
+Surcharge: Rs. 0.00
+Rebate: Rs. 0.00
+Final Bill: Rs. 540.00
 
-Enter your choice (1-4): 1
-Enter deposit amount (Rs.): -500
-Invalid deposit amount! Transaction rejected.
+Month: March
+Consumption: 300.00 kWh
+Energy Charges: Rs. 900.00
+Fixed Charges: Rs. 100.00
+Surcharge: Rs. 0.00
+Rebate: Rs. 0.00
+Final Bill: Rs. 1000.00
 
-Enter your choice (1-4): 2
-Enter withdrawal amount (Rs.): 12000
-Withdrawal limit exceeded! Transaction rejected.
-Maximum limit: Rs. 10000.00
+========== MONTHLY BILL COMPARISON ==========
 
-Enter your choice (1-4): 2
-Enter withdrawal amount (Rs.): 7000
-Insufficient balance! Transaction rejected.
+January -> February
+Previous Bill: Rs. 450.00
+Current Bill: Rs. 540.00
+Bill Increase: Rs. 90.00
+Percentage Change: 20.00%
+Status: No unusual increase.
 
-Enter your choice (1-4): 3
-Current balance: Rs. 5500.00
+February -> March
+Previous Bill: Rs. 540.00
+Current Bill: Rs. 1000.00
+Bill Increase: Rs. 460.00
+Percentage Change: 85.19%
+Alert: Unusual increase in electricity bill!
 
-Enter your choice (1-4): 4
-
-===== TRANSACTION SUMMARY =====
-Total transactions     : 5
-Successful transactions: 2
-Rejected transactions  : 3
-Total deposits         : Rs. 2000.00
-Total withdrawals      : Rs. 1500.00
-Final balance          : Rs. 5500.00
-
-Thank you for using the ATM!
-
-
+========== OVERALL SUMMARY ==========
+Months Analyzed: 3
+Total Electricity Cost: Rs. 1990.00
+Average Monthly Bill: Rs. 663.33
