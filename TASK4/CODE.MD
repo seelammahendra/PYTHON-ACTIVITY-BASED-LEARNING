@@ -43,7 +43,6 @@ The program performs the following operations:
 7. Stop the program.
 
 ## 3. Flowchart 
-
 ```mermaid
     A([Start]) --> B[Enter tank details]
     B --> C[Enter daily inflow and outflow]
@@ -60,7 +59,6 @@ The program performs the following operations:
     J -->|No| K[Display simulation summary]
     K --> L([Stop])
 ```
-
 ## 5. Sample Input
 
 
