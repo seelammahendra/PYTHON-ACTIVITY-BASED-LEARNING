@@ -1,111 +1,211 @@
-MAX_WITHDRAWAL_LIMIT = 10000
-while True:
-    try:
-        balance = float(input("Enter initial balance (Rs.): "))
-
-        if balance >= 0:
-            break
-
-        print("Invalid balance! Balance cannot be negative.")
-
-    except ValueError:
-        print("Invalid input! Please enter a numeric value.")
+from datetime import datetime
 
 
-total_deposits = 0.0
-total_withdrawals = 0.0
-total_transactions = 0
-successful_transactions = 0
-rejected_transactions = 0
+def time_to_minutes(time_text):
+    """Convert HH:MM time into minutes after midnight."""
+    parsed_time = datetime.strptime(time_text, "%H:%M")
+    return parsed_time.hour * 60 + parsed_time.minute
 
-print("\n===== ATM MENU =====")
-print("1. Deposit")
-print("2. Withdraw")
-print("3. Check Balance")
-print("4. Exit")
 
-while True:
-    try:
-        choice = int(input("\nEnter your choice (1-4): "))
+def intervals_overlap(start1, end1, start2, end2):
+    """Return True if two time intervals overlap."""
+    return start1 < end2 and start2 < end1
 
-    except ValueError:
-        print("Invalid choice! Enter a number from 1 to 4.")
-        continue
 
-   
-    if choice == 1:
+def parse_schedule(schedule_string):
+    """
+    Expected format:
+    Course,Day,StartTime,EndTime,Room
+    Example:
+    Mathematics,Monday,09:00,10:00,R101
+    """
+    parts = [part.strip() for part in schedule_string.split(",")]
+
+    if len(parts) != 5:
+        raise ValueError("Schedule must contain five comma-separated fields.")
+
+    course, day, start, end, room = parts
+
+    start_minutes = time_to_minutes(start)
+    end_minutes = time_to_minutes(end)
+
+    if start_minutes >= end_minutes:
+        raise ValueError("Start time must be earlier than end time.")
+
+    return (
+        course,
+        day.title(),
+        start,
+        end,
+        room.upper()
+    )
+
+
+def validate_timetable(existing, proposed, unavailable_rooms):
+    conflicts = []
+
+    for index, current in enumerate(proposed):
+        course, day, start, end, room = current
+
         try:
-            amount = float(input("Enter deposit amount (Rs.): "))
+            start_minutes = time_to_minutes(start)
+            end_minutes = time_to_minutes(end)
+
+            if start_minutes >= end_minutes:
+                conflicts.append(
+                    f"{course}: Start time must be earlier than end time."
+                )
+                continue
+
         except ValueError:
-            print("Invalid amount! Transaction rejected.")
-            total_transactions += 1
-            rejected_transactions += 1
+            conflicts.append(
+                f"{course}: Invalid time format. Use HH:MM."
+            )
             continue
 
-        total_transactions += 1
+        # Check room unavailability.
+        for unavailable in unavailable_rooms:
+            unavailable_room, unavailable_day, unavailable_start, unavailable_end = unavailable
 
-        if amount <= 0:
-            print("Invalid deposit amount! Transaction rejected.")
-            rejected_transactions += 1
+            if room == unavailable_room and day == unavailable_day:
+                u_start = time_to_minutes(unavailable_start)
+                u_end = time_to_minutes(unavailable_end)
 
-        else:
-            balance += amount
-            total_deposits += amount
-            successful_transactions += 1
+                if intervals_overlap(
+                    start_minutes,
+                    end_minutes,
+                    u_start,
+                    u_end
+                ):
+                    conflicts.append(
+                        f"{course}: Room {room} is unavailable "
+                        f"on {day} from {unavailable_start} "
+                        f"to {unavailable_end}."
+                    )
 
-            print("Deposit successful!")
-            print(f"Current balance: Rs. {balance:.2f}")
+        # Check against existing courses and earlier proposed courses.
+        all_other_classes = existing + proposed[:index]
 
-    
-    elif choice == 2:
+        for other in all_other_classes:
+            other_course, other_day, other_start, other_end, other_room = other
+
+            if course == other_course and day == other_day:
+                # Avoid treating a course as a conflict with itself.
+                continue
+
+            if day != other_day:
+                continue
+
+            other_start_minutes = time_to_minutes(other_start)
+            other_end_minutes = time_to_minutes(other_end)
+
+            if intervals_overlap(
+                start_minutes,
+                end_minutes,
+                other_start_minutes,
+                other_end_minutes
+            ):
+                if room == other_room:
+                    conflicts.append(
+                        f"{course}: Room conflict with {other_course} "
+                        f"in room {room} on {day}."
+                    )
+                else:
+                    conflicts.append(
+                        f"{course}: Time conflict with {other_course} "
+                        f"on {day}."
+                    )
+
+    return conflicts
+
+
+def main():
+    print("STUDENT TIMETABLE CONFLICT DETECTION")
+
+    existing = []
+    proposed = []
+    unavailable_rooms = []
+
+    existing_count = int(
+        input("Enter number of existing classes: ")
+    )
+
+    for i in range(existing_count):
+        schedule = input(
+            f"Enter existing schedule {i + 1} "
+            "(Course,Day,Start,End,Room): "
+        )
+
         try:
-            amount = float(input("Enter withdrawal amount (Rs.): "))
+            existing.append(parse_schedule(schedule))
+        except ValueError as error:
+            print("Invalid existing schedule:", error)
+            return
+
+    unavailable_count = int(
+        input("Enter number of room unavailability periods: ")
+    )
+
+    for i in range(unavailable_count):
+        print(f"Unavailability period {i + 1}")
+        room = input("Room: ").strip().upper()
+        day = input("Day: ").strip().title()
+        start = input("Unavailable start time (HH:MM): ").strip()
+        end = input("Unavailable end time (HH:MM): ").strip()
+
+        try:
+            start_minutes = time_to_minutes(start)
+            end_minutes = time_to_minutes(end)
+
+            if start_minutes >= end_minutes:
+                print("Invalid unavailability interval.")
+                return
+
         except ValueError:
-            print("Invalid amount! Transaction rejected.")
-            total_transactions += 1
-            rejected_transactions += 1
-            continue
+            print("Invalid time format.")
+            return
 
-        total_transactions += 1
+        unavailable_rooms.append((room, day, start, end))
 
-        if amount <= 0:
-            print("Invalid withdrawal amount! Transaction rejected.")
-            rejected_transactions += 1
+    proposed_count = int(
+        input("Enter number of proposed classes: ")
+    )
 
-        elif amount > MAX_WITHDRAWAL_LIMIT:
-            print("Withdrawal limit exceeded! Transaction rejected.")
-            print(f"Maximum limit: Rs. {MAX_WITHDRAWAL_LIMIT:.2f}")
-            rejected_transactions += 1
+    for i in range(proposed_count):
+        schedule = input(
+            f"Enter proposed schedule {i + 1} "
+            "(Course,Day,Start,End,Room): "
+        )
 
-        elif amount > balance:
-            print("Insufficient balance! Transaction rejected.")
-            rejected_transactions += 1
+        try:
+            proposed.append(parse_schedule(schedule))
+        except ValueError as error:
+            print("Invalid proposed schedule:", error)
+            return
 
-        else:
-            balance -= amount
-            total_withdrawals += amount
-            successful_transactions += 1
+    print("\n--- PROPOSED TIMETABLE ---")
 
-            print("Withdrawal successful!")
-            print(f"Current balance: Rs. {balance:.2f}")
+    for course in proposed:
+        print(course)
 
-   
-    elif choice == 3:
-        print(f"Current balance: Rs. {balance:.2f}")
+    conflicts = validate_timetable(
+        existing,
+        proposed,
+        unavailable_rooms
+    )
 
-   
-    elif choice == 4:
-        print("\n===== TRANSACTION SUMMARY =====")
-        print(f"Total transactions     : {total_transactions}")
-        print(f"Successful transactions: {successful_transactions}")
-        print(f"Rejected transactions  : {rejected_transactions}")
-        print(f"Total deposits         : Rs. {total_deposits:.2f}")
-        print(f"Total withdrawals      : Rs. {total_withdrawals:.2f}")
-        print(f"Final balance          : Rs. {balance:.2f}")
+    print("\n--- VALIDATION RESULTS ---")
 
-        print("\nThank you for using the ATM!")
-        break
+    if conflicts:
+        print("Timetable validation failed.")
 
-    
+        for conflict in conflicts:
+            print("- " + conflict)
     else:
-        print("Invalid choice! Please select an option from 1 to 4.")
+        print("Timetable is valid.")
+        print("No time conflicts or room availability issues detected.")
+
+
+if __name__ == "__main__":
+    main()
+        
