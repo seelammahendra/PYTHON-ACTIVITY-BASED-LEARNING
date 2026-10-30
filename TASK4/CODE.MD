@@ -45,7 +45,6 @@ The program performs the following operations:
 ## 3. Flowchart 
 
 ```mermaid
-
     A([Start]) --> B[Enter tank details]
     B --> C[Enter daily inflow and outflow]
     C --> D[Calculate new water level]
@@ -61,8 +60,6 @@ The program performs the following operations:
     J -->|No| K[Display simulation summary]
     K --> L([Stop])
 ```
-
-
 
 ## 5. Sample Input
 
