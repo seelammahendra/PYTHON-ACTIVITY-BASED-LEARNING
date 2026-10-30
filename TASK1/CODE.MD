@@ -52,7 +52,6 @@ Additional billing rules:
 8. Stop the program.
 
 ## 3. Flowchart 
-
 ```mermaid 
     A([Start]) --> B[/Enter number of months/]
     B --> C[Initialize monthly records]
