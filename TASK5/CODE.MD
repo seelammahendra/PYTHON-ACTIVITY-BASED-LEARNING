@@ -1,139 +1,133 @@
-# University Admission Decision Engine Using Python
+# Progressive Water Tariff Analysis Using Python
 
 ## 1. Problem Statement
 
-Develop a Python program to evaluate university applicants based on subject eligibility, aggregate marks, course-specific admission thresholds, and tie-breaking criteria. The program should identify eligible applicants and generate a ranked list for each course.
+Develop a Python program to calculate water bills for multiple households using progressive consumption slabs, fixed service fees, and penalties. The program should compare household water consumption, calculate the total bill for each household, and identify households with excessive water usage.
 
 ### Requirements
-- Accept applicant details, including name, aggregate marks, and subject marks.
-- Check whether applicants meet the required subject eligibility criteria.
-- Evaluate applicants against course-specific aggregate thresholds.
-- Rank eligible applicants based on aggregate marks.
-- Use subject marks and applicant ID as tie-breakers when aggregate marks are equal.
-- Display eligible applicants in ranked order and list rejected applicants with their reasons for ineligibility.
 
-**Admission rules used in this example:**
-1. Each course specifies the required subjects and minimum marks in each subject.
-2. Each course has a minimum aggregate percentage.
-3. Applicants must satisfy both the subject requirements and the aggregate threshold.
-4. Eligible applicants are ranked by:
-   - Highest aggregate percentage.
-   - Highest total marks in the course's required subjects.
-   - Lowest applicant ID if the previous criteria are tied.
+- Accept the number of households and each household's water consumption in kilolitres (kL).
+- Calculate water charges using progressive tariff slabs.
+- Add a fixed service fee to each household's bill.
+- Apply a penalty when consumption exceeds the specified limit.
+- Display each household's consumption, slab charges, penalty, and total bill.
+- Compare consumption across households.
+- Identify households with excessive water usage and determine which household consumes the most water.
 
-*These rules are illustrative and can be changed to match a university's actual admission policy.*
+### Example tariff rules
+
+For this program, assume the following rates:
+
+| Water consumption slab | Rate per kL |
+|---|---:|
+| First 10 kL | ₹5 |
+| Next 10 kL (10–20 kL) | ₹8 |
+| Above 20 kL | ₹12 |
+
+Additional rules:
+- **Fixed service fee:** ₹50 per household.
+- **Excessive usage limit:** 25 kL.
+- **Excess usage penalty:** ₹100 if consumption exceeds 25 kL.
+- The penalty is applied once per household per billing period.
+
+These are example rates for an academic program, not an actual utility tariff.
 
 ## 2. Algorithm
 
 1. Start.
-2. Define the available courses and their admission requirements.
-3. Input the number of applicants.
-4. For each applicant:
-   - Enter the applicant ID and name.
-   - Enter the marks obtained in each subject.
-   - Calculate the aggregate percentage.
-5. Select a course for admission evaluation.
-6. Check whether the applicant satisfies the minimum marks required in each compulsory subject.
-7. Check whether the applicant meets the course's minimum aggregate percentage.
-8. If both conditions are satisfied, mark the applicant as eligible; otherwise, record the reason for rejection.
-9. Sort eligible applicants by aggregate percentage, required-subject marks, and applicant ID.
-10. Display the ranked list of eligible applicants.
-11. Display applicants who do not meet the requirements and their rejection reasons.
-12. Stop.
+2. Define the water tariff slabs, fixed fee, excessive usage limit, and penalty.
+3. Input the number of households.
+4. For each household:
+   - Enter the household name or ID.
+   - Enter water consumption in kL.
+   - Calculate the charge for the first 10 kL.
+   - Calculate the charge for the next 10 kL, if applicable.
+   - Calculate the charge for consumption above 20 kL, if applicable.
+   - Add the fixed service fee.
+   - Apply the penalty if consumption exceeds 25 kL.
+   - Calculate the final bill.
+5. Store the results for all households.
+6. Compare household consumption and identify excessive users.
+7. Find the household with the highest consumption.
+8. Display the complete billing report and consumption comparison.
+9. Stop.
 
 ## 3. Flowchart
 
-```mermaid
+```mermaid 
 
-    A([Start]) --> B[Define course requirements]
-    B --> C[/Enter applicant details and marks/]
-    C --> D[Calculate aggregate percentage]
-    D --> E[Select course]
-    E --> F{Meet subject eligibility?}
-    F -- No --> G[Record subject eligibility failure]
-    F -- Yes --> H{Meet aggregate threshold?}
-    H -- No --> I[Record aggregate threshold failure]
-    H -- Yes --> J[Add applicant to eligible list]
-    G --> K{More applicants?}
-    I --> K
-    J --> K
-    K -- Yes --> C
-    K -- No --> L[Rank eligible applicants]
-    L --> M[/Display ranked list and rejection reasons/]
-    M --> N([Stop])
+    A([Start]) --> B[Define tariff slabs and fees]
+    B --> C[/Enter number of households/]
+    C --> D[/Enter household name and consumption/]
+    D --> E[Calculate progressive water charges]
+    E --> F[Add fixed service fee]
+    F --> G{Consumption above 25 kL?}
+    G -- Yes --> H[Add penalty of Rs. 100]
+    G -- No --> I[No penalty]
+    H --> J[Calculate total bill]
+    I --> J
+    J --> K[Store household details]
+    K --> L{More households?}
+    L -- Yes --> D
+    L -- No --> M[Compare consumption]
+    M --> N[Identify excessive users and highest consumer]
+    N --> O[/Display billing report/]
+    O --> P([Stop])
 ```
-## 5.Sample input
-Enter number of applicants: 3
+## 5. Sample Input
 
-Applicant 1
-Applicant ID: 103
-Applicant name: Ananya
-Mathematics marks (0-100): 90
-Physics marks (0-100): 85
-Chemistry marks (0-100): 80
-English marks (0-100): 75
 
-Applicant 2
-Applicant ID: 101
-Applicant name: Bharat
-Mathematics marks (0-100): 85
-Physics marks (0-100): 80
-Chemistry marks (0-100): 75
-English marks (0-100): 80
+Enter number of households: 3
 
-Applicant 3
-Applicant ID: 102
-Applicant name: Charan
-Mathematics marks (0-100): 60
-Physics marks (0-100): 55
-Chemistry marks (0-100): 65
-English marks (0-100): 70
-           
+Household 1
+Enter household name or ID: H101
+Enter water consumption (kL): 8
+
+Household 2
+Enter household name or ID: H102
+Enter water consumption (kL): 18
+
+Household 3
+Enter household name or ID: H103
+Enter water consumption (kL): 30
 
 
 ## 6. Sample Output
 
 
-=============================================
-ADMISSION RANKING: ENGINEERING
-Minimum aggregate: 75%
-=============================================
+========== WATER BILL REPORT ==========
 
-Rank | ID | Name | Aggregate | Required-Subject Marks
-------------------------------------------------------------
-   1 | 103 | Ananya | 82.50% | 255.00
-   2 | 101 | Bharat | 80.00% | 240.00
+Household: H101
+Consumption: 8.00 kL
+Water Charges: Rs. 40.00
+Fixed Fee: Rs. 50.00
+Penalty: Rs. 0.00
+Total Bill: Rs. 90.00
 
-Rejected Applicants:
-- Charan (ID: 102)
-  Reason: Mathematics marks below required minimum (70)
-  Reason: Physics marks below required minimum (60)
-  Reason: Aggregate below required minimum (75%)
+Household: H102
+Consumption: 18.00 kL
+Water Charges: Rs. 114.00
+Fixed Fee: Rs. 50.00
+Penalty: Rs. 0.00
+Total Bill: Rs. 164.00
 
-=============================================
-ADMISSION RANKING: SCIENCE
-Minimum aggregate: 65%
-=============================================
+Household: H103
+Consumption: 30.00 kL
+Water Charges: Rs. 260.00
+Fixed Fee: Rs. 50.00
+Penalty: Rs. 100.00
+Total Bill: Rs. 410.00
 
-Rank | ID | Name | Aggregate | Required-Subject Marks
-------------------------------------------------------------
-   1 | 103 | Ananya | 82.50% | 255.00
-   2 | 101 | Bharat | 80.00% | 240.00
-   3 | 102 | Charan | 62.50% | 180.00
+========== CONSUMPTION ANALYSIS ==========
+Average Consumption: 18.67 kL
+Highest Consumer: H103 (30.00 kL)
 
-Rejected Applicants:
-None
+Excessive Water Users:
+- H103: 30.00 kL
 
-=============================================
-ADMISSION RANKING: ARTS
-Minimum aggregate: 60%
-=============================================
+Households Ranked by Consumption:
+1. H103 - 30.00 kL
+2. H102 - 18.00 kL
+3. H101 - 8.00 kL
 
-Rank | ID | Name | Aggregate | Required-Subject Marks
-------------------------------------------------------------
-   1 | 103 | Ananya | 82.50% | 75.00
-   2 | 101 | Bharat | 80.00% | 80.00
-   3 | 102 | Charan | 62.50% | 70.00
 
-Rejected Applicants:
-None
