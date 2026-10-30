@@ -1,152 +1,100 @@
-# Progressive Electricity Billing
+# Student Timetable Conflict Detection
 
 ## 1. Problem Statement
 
-Develop a Python program to calculate household electricity bills using progressive consumption slabs, fixed charges, surcharges, and rebates. The program should process electricity consumption for several months, calculate each month's bill, compare bills across months, and identify unusual increases in electricity costs.
+Develop a Python program to detect timetable conflicts by comparing course schedules represented using strings and tuples. The program should identify overlapping class periods, detect unavailable or double-booked rooms, and validate a proposed timetable before it is finalized.
 
 The program should:
-- Accept monthly electricity consumption in kilowatt-hours (kWh).
-- Calculate energy charges using progressive consumption slabs.
-- Add fixed monthly charges.
-- Apply a surcharge when consumption exceeds a specified limit.
-- Apply a rebate when consumption is below a specified limit.
-- Calculate the final bill for each month.
-- Compare monthly bills and calculate percentage changes.
-- Identify unusual increases in electricity bills.
+- Store course schedules using tuples containing course name, day, start time, end time, and room.
+- Accept schedule information as strings and convert it into structured tuples.
+- Detect overlapping periods for classes scheduled on the same day.
+- Identify room conflicts when two classes are assigned the same room at overlapping times.
+- Check whether a room is unavailable during a proposed class period.
+- Validate a proposed timetable and report all detected conflicts.
 
-**Assumptions for this program:**
-
-| Electricity consumption slab | Rate per kWh |
-|---|---:|
-| First 100 units | ₹2.00 |
-| Next 100 units (101–200) | ₹3.00 |
-| Next 300 units (201–500) | ₹5.00 |
-| Above 500 units | ₹7.00 |
-
-Additional billing rules:
-- Fixed monthly charge: ₹100.
-- Surcharge: 10% of energy charges when consumption exceeds 500 units.
-- Rebate: 5% of energy charges when consumption is below 100 units.
-- An increase of more than 20% compared with the previous month's bill is considered unusual.
-- The rebate and surcharge are applied to energy charges only.
-
-*These rates and rules are illustrative and do not represent any specific electricity provider's tariff.*
+**Assumptions:**
+- Time is represented in 24-hour `HH:MM` format.
+- A class conflicts with another class when their time intervals overlap on the same day.
+- Two classes can occur at the same time if they use different rooms and belong to different student groups.
+- In this program, all courses belong to the same student, so overlapping class periods are treated as student timetable conflicts.
+- Room unavailability is provided as a list of unavailable time intervals for specific rooms.
+- The end time of one class may equal the start time of another without creating a conflict.
 
 ## 2. Algorithm
 
 1. Start the program.
-2. Input the number of months to analyze.
-3. For each month:
-   - Enter the month name and electricity consumption.
-   - Validate that consumption is nonnegative.
-   - Calculate energy charges using progressive slabs.
-   - Add the fixed monthly charge.
-   - Apply the surcharge if consumption exceeds 500 units.
-   - Apply the rebate if consumption is below 100 units.
-   - Calculate the final bill.
-   - Store the monthly consumption and bill amount.
-4. Compare each month's bill with the previous month's bill.
-5. Calculate the percentage increase or decrease.
-6. If the bill increases by more than 20%, flag it as an unusual increase.
-7. Display the monthly bill breakdown and comparison summary.
-8. Stop the program.
+2. Define a function to convert time strings into minutes.
+3. Define a function to compare two time intervals.
+4. Accept existing course schedules as strings.
+5. Convert each schedule string into a tuple containing course, day, start time, end time, and room.
+6. Input room unavailability periods.
+7. Accept the proposed timetable.
+8. Validate each proposed schedule:
+   - Check that the day and time values are valid.
+   - Ensure that the start time is earlier than the end time.
+   - Check for overlapping periods with existing courses.
+   - Check whether the assigned room is already occupied.
+   - Check whether the room is unavailable during the proposed period.
+9. Record all detected conflicts.
+10. Display the proposed timetable and validation results.
+11. If no conflicts exist, mark the timetable as valid.
+12. Otherwise, display the conflicts that must be resolved.
+13. Stop the program.
 
-## 3. Flowchart 
-```mermaid 
-    A([Start]) --> B[/Enter number of months/]
-    B --> C[Initialize monthly records]
-    C --> D[/Enter month and consumption/]
-    D --> E{Consumption valid?}
-    E -- No --> F[Display error]
-    F --> Z([Stop])
-    E -- Yes --> G[Calculate progressive energy charges]
-    G --> H[Add fixed charge]
-    H --> I{Consumption above 500?}
-    I -- Yes --> J[Apply 10% surcharge]
-    I -- No --> K{Consumption below 100?}
-    J --> L[Calculate final bill]
-    K -- Yes --> M[Apply 5% rebate]
-    K -- No --> L
-    M --> L
-    L --> N[Store monthly bill]
-    N --> O{More months?}
-    O -- Yes --> D
-    O -- No --> P[Compare consecutive monthly bills]
-    P --> Q{Increase greater than 20%?}
-    Q -- Yes --> R[Flag unusual increase]
-    Q -- No --> S[Record normal change]
-    R --> T[Display monthly and comparison reports]
-    S --> T
-    T --> Z
+## 3. Flowchart Using Mermaid
+
+```mermaid id="time001"
+flowchart TD
+    A([Start]) --> B[Define time conversion and overlap functions]
+    B --> C[/Enter existing schedules as strings/]
+    C --> D[Convert strings into tuples]
+    D --> E[/Enter room unavailability periods/]
+    E --> F[/Enter proposed timetable/]
+    F --> G[Validate day and time values]
+    G --> H{Schedule valid?}
+    H -- No --> I[Record invalid schedule]
+    H -- Yes --> J[Check course time conflicts]
+    J --> K[Check room occupancy conflicts]
+    K --> L[Check room unavailability]
+    L --> M{More proposed classes?}
+    I --> M
+    M -- Yes --> G
+    M -- No --> N[Display all conflicts]
+    N --> O{Any conflicts?}
+    O -- No --> P[Timetable is valid]
+    O -- Yes --> Q[Timetable needs correction]
+    P --> R([Stop])
+    Q --> R
 ```
-
-
 
 ## 5. Sample Input
 
-Enter number of months: 3
 
---- Month 1 ---
-Enter month name: January
-Enter electricity consumption (kWh): 150
+Enter number of existing classes: 2
+Enter existing schedule 1 (Course,Day,Start,End,Room): Mathematics,Monday,09:00,10:00,R101
+Enter existing schedule 2 (Course,Day,Start,End,Room): Physics,Monday,10:00,11:00,R102
 
---- Month 2 ---
-Enter month name: February
-Enter electricity consumption (kWh): 180
+Enter number of room unavailability periods: 1
+Unavailability period 1
+Room: R103
+Day: Monday
+Unavailable start time (HH:MM): 11:00
+Unavailable end time (HH:MM): 12:00
 
---- Month 3 ---
-Enter month name: March
-Enter electricity consumption (kWh): 300
+Enter number of proposed classes: 2
+Enter proposed schedule 1 (Course,Day,Start,End,Room): Chemistry,Monday,09:30,10:30,R104
+Enter proposed schedule 2 (Course,Day,Start,End,Room): ComputerScience,Monday,11:00,12:00,R103
 
 
 ## 6. Sample Output
+STUDENT TIMETABLE CONFLICT DETECTION
 
+--- PROPOSED TIMETABLE ---
+('Chemistry', 'Monday', '09:30', '10:30', 'R104')
+('ComputerScience', 'Monday', '11:00', '12:00', 'R103')
 
-PROGRESSIVE ELECTRICITY BILLING
-
-========== MONTHLY BILL DETAILS ==========
-
-Month: January
-Consumption: 150.00 kWh
-Energy Charges: Rs. 350.00
-Fixed Charges: Rs. 100.00
-Surcharge: Rs. 0.00
-Rebate: Rs. 0.00
-Final Bill: Rs. 450.00
-
-Month: February
-Consumption: 180.00 kWh
-Energy Charges: Rs. 440.00
-Fixed Charges: Rs. 100.00
-Surcharge: Rs. 0.00
-Rebate: Rs. 0.00
-Final Bill: Rs. 540.00
-
-Month: March
-Consumption: 300.00 kWh
-Energy Charges: Rs. 900.00
-Fixed Charges: Rs. 100.00
-Surcharge: Rs. 0.00
-Rebate: Rs. 0.00
-Final Bill: Rs. 1000.00
-
-========== MONTHLY BILL COMPARISON ==========
-
-January -> February
-Previous Bill: Rs. 450.00
-Current Bill: Rs. 540.00
-Bill Increase: Rs. 90.00
-Percentage Change: 20.00%
-Status: No unusual increase.
-
-February -> March
-Previous Bill: Rs. 540.00
-Current Bill: Rs. 1000.00
-Bill Increase: Rs. 460.00
-Percentage Change: 85.19%
-Alert: Unusual increase in electricity bill!
-
-========== OVERALL SUMMARY ==========
-Months Analyzed: 3
-Total Electricity Cost: Rs. 1990.00
-Average Monthly Bill: Rs. 663.33
+--- VALIDATION RESULTS ---
+Timetable validation failed.
+- Chemistry: Time conflict with Mathematics on Monday.
+- Chemistry: Time conflict with Physics on Monday.
+- ComputerScience: Room R103 is unavailable on Monday from 11:00 to 12:00.
