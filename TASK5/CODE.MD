@@ -1,82 +1,128 @@
-
-# Advanced Numeric Pattern Generator Using Python
+# University Scholarship Allocation Using Python
 
 ## 1. Problem Statement
 
-Write a Python program to generate a **Hollow Diamond Pattern** or a **Symmetric Numerical Pattern** based on the user's choice and specified dimension. The program must validate the input dimensions, handle invalid choices, and display the pattern with proper alignment.
+Develop a Python program to allocate university scholarships by evaluating applicants based on aggregate marks, subject-wise minimum scores, attendance percentage, and family income. The program should identify eligible applicants, rank them according to predefined criteria, and resolve ties fairly.
 
-The dimension must be an integer between 1 and 9.
+The system should perform the following tasks:
+
+- Accept applicant details, including name, ID, subject marks, attendance percentage, and annual family income.
+- Calculate the aggregate percentage of each applicant.
+- Verify minimum subject-wise marks.
+- Check attendance and family income requirements.
+- Identify eligible and ineligible applicants with reasons.
+- Rank eligible applicants using aggregate marks and predefined tie-breaking rules.
+- Display the final scholarship ranking.
+
+### Example Scholarship Rules
+
+| Criterion | Requirement |
+|---|---|
+| Aggregate marks | At least 75% |
+| Mathematics | At least 60 marks |
+| Science | At least 60 marks |
+| English | At least 50 marks |
+| Attendance | At least 85% |
+| Annual family income | Not more than ₹300,000 |
+
+**Ranking and tie-breaking rules:**
+1. Higher aggregate percentage ranks first.
+2. If aggregate percentages are equal, higher combined Mathematics and Science marks rank first.
+3. If both criteria are equal, higher attendance ranks first.
+4. If all previous criteria are equal, the lower applicant ID ranks first.
+
+These are example rules for an academic project. Actual scholarship requirements may differ by university.
 
 ## 2. Algorithm
 
 1. Start.
-2. Display the pattern menu:
-   - 1. Hollow Diamond
-   - 2. Symmetric Numerical Pyramid
-3. Input the user's choice and dimension.
-4. Validate the choice and dimension.
-5. If the input is invalid, display an error message and stop.
-6. If the choice is 1, generate the hollow diamond using loops.
-7. If the choice is 2, generate the symmetric numerical pyramid using loops.
-8. Display the generated pattern.
-9. Stop.
+2. Define the minimum aggregate, subject-wise marks, attendance, and maximum family income.
+3. Input the number of scholarship applicants.
+4. For each applicant:
+   - Enter applicant ID and name.
+   - Enter Mathematics, Science, and English marks.
+   - Enter attendance percentage and annual family income.
+   - Calculate the aggregate percentage.
+5. Check whether the applicant satisfies all eligibility criteria.
+6. If any criterion is not satisfied, record the reason for ineligibility.
+7. Add eligible applicants to the scholarship list.
+8. Sort eligible applicants using the predefined ranking and tie-breaking rules.
+9. Assign ranks to eligible applicants.
+10. Display the ranked scholarship list and rejected applicants with reasons.
+11. Stop.
 
-## 3. Flowchart 
+## 3. Flowchart (Mermaid)
 
 ```mermaid
-
-    A([Start]) --> B[/Display pattern menu/]
-    B --> C[/Input choice and dimension/]
-    C --> D{Valid input?}
-    D -- No --> E[/Display error message/]
-    E --> J([Stop])
-    D -- Yes --> F{Choice equals 1?}
-    F -- Yes --> G[Generate hollow diamond]
-    F -- No --> H[Generate numerical pyramid]
-    G --> I[/Display pattern/]
+flowchart TD
+    A([Start]) --> B[Define scholarship criteria]
+    B --> C[/Enter number of applicants/]
+    C --> D[/Enter applicant details and marks/]
+    D --> E[Calculate aggregate percentage]
+    E --> F{All eligibility criteria satisfied?}
+    F -- Yes --> G[Add applicant to eligible list]
+    F -- No --> H[Record reasons for rejection]
+    G --> I{More applicants?}
     H --> I
-    I --> J
+    I -- Yes --> D
+    I -- No --> J[Sort eligible applicants]
+    J --> K[Apply tie-breaking rules]
+    K --> L[Assign ranks]
+    L --> M[/Display rankings and rejection reasons/]
+    M --> N([Stop])
 ```
+
 
 ## 5. Sample Input
 
 
-ADVANCED NUMERIC PATTERN GENERATOR
-1. Hollow Diamond
-2. Symmetric Numerical Pyramid
-Enter your choice (1 or 2): 1
-Enter dimension (1-9): 5
+Enter number of applicants: 3
+
+Applicant 1
+Enter applicant ID: 101
+Enter applicant name: Asha
+Enter Mathematics marks (0-100): 90
+Enter Science marks (0-100): 88
+Enter English marks (0-100): 92
+Enter attendance percentage (0-100): 95
+Enter annual family income (Rs.): 200000
+
+Applicant 2
+Enter applicant ID: 102
+Enter applicant name: Bharat
+Enter Mathematics marks (0-100): 95
+Enter Science marks (0-100): 83
+Enter English marks (0-100): 92
+Enter attendance percentage (0-100): 90
+Enter annual family income (Rs.): 250000
+
+Applicant 3
+Enter applicant ID: 103
+Enter applicant name: Charan
+Enter Mathematics marks (0-100): 55
+Enter Science marks (0-100): 65
+Enter English marks (0-100): 70
+Enter attendance percentage (0-100): 80
+Enter annual family income (Rs.): 400000
 
 
 ## 6. Sample Output
 
 
-Generated Pattern:
-    *
-   * *
-  *   *
- *     *
-*       *
- *     *
-  *   *
-   * *
-    *
+========== SCHOLARSHIP RANKING ==========
+Rank  ID      Name           Aggregate    Attendance
+-------------------------------------------------------
+1     101     Asha           90.00%       95.00%
+2     102     Bharat         90.00%       90.00%
 
+Total eligible applicants: 2
 
-### Another Sample: Symmetric Numerical Pyramid
+========== INELIGIBLE APPLICANTS ==========
 
-**Sample Input**
-
-Enter your choice (1 or 2): 2
-Enter dimension (1-9): 5
-
-
-**Sample Output**
-
-        1
-      1 2 1
-    1 2 3 2 1
-  1 2 3 4 3 2 1
-1 2 3 4 5 4 3 2 1
+Charan (ID: 103)
+- Mathematics marks below 60
+- Aggregate below 75%
+- Attendance below 85%
+- Annual family income exceeds Rs. 300000
 
 
