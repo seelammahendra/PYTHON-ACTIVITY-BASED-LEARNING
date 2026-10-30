@@ -1,117 +1,148 @@
-# Smart Parking Fee Management Using Python
+# 4. Courier Charge Optimization
 
 ## 1. Problem Statement
 
-Smart Parking Fee Management is a Python program designed to calculate parking charges based on vehicle category, entry time, exit time, overnight parking, daily fee limits, and penalty conditions.
+Develop a Python program to calculate courier delivery charges based on parcel weight, dimensions, delivery distance zones, urgency, and declared restrictions. The program should compare multiple courier service options, determine which services satisfy the parcel's requirements, and select the most economical eligible service.
 
-The program accepts parking details from the user, validates the time inputs, calculates the parking duration, and determines the total parking fee according to predefined rules.
+The program should:
+- Accept parcel weight, length, width, and height.
+- Calculate volumetric weight and determine the billable weight.
+- Calculate charges according to the distance zone.
+- Apply additional charges for urgent delivery.
+- Check parcel restrictions, such as prohibited items and maximum weight or size limits.
+- Compare standard, express, and priority courier services.
+- Select the lowest-cost service among eligible options.
+- Display the charge breakdown and explain why any service is ineligible.
 
-The program performs the following operations:
+**Assumptions for this program:**
 
-1. Accept the vehicle category, entry date and time, and exit date and time.
-2. Validate the date and time inputs.
-3. Calculate the total parking duration.
-4. Apply different hourly rates for cars, bikes, and trucks.
-5. Identify overnight parking and apply the relevant charges.
-6. Enforce a maximum daily parking fee.
-7. Apply penalties for invalid parking conditions, such as parking beyond a specified maximum duration.
-8. Display the parking duration, base fee, penalties, and final amount payable.
+**Volumetric weight:**
 
-### Assumptions
+\[
+\text{Volumetric Weight (kg)} =
+\frac{\text{Length} \times \text{Width} \times \text{Height}}{5000}
+\]
 
-The following rates and rules are used for this simulation. They can be changed according to actual parking policies.
+Dimensions are measured in centimetres.
 
-| Vehicle category | Hourly rate |
+**Billable weight:**
+
+\[
+\text{Billable Weight} =
+\max(\text{Actual Weight},\text{Volumetric Weight})
+\]
+
+**Illustrative pricing rules:**
+
+| Distance zone | Base charge per kg |
 |---|---:|
-| Bike | ₹20 |
-| Car | ₹50 |
-| Truck | ₹100 |
+| Local | ₹40 |
+| Regional | ₹70 |
+| National | ₹100 |
 
-Additional rules:
+Additional charges:
+- Standard delivery: No urgency surcharge.
+- Express delivery: 25% surcharge.
+- Priority delivery: 50% surcharge.
+- Handling fee: ₹30 per parcel.
+- Maximum weight: 20 kg for Standard, 15 kg for Express, and 10 kg for Priority.
+- Maximum parcel dimension: 100 cm per side.
+- Prohibited items are not accepted by any service.
+- Declared fragile parcels require a service that supports fragile-item handling.
 
-- **Minimum charge:** One hour's fee, even for shorter stays.
-- **Partial hours:** Any additional fraction of an hour is charged as a full hour.
-- **Overnight parking:** An additional ₹100 is charged for each midnight crossed.
-- **Daily fee limit:** The hourly parking charge cannot exceed ₹500 per calendar day.
-- **Penalty:** A ₹200 penalty applies if the total parking duration exceeds 72 hours.
-- **Time validation:** The exit date and time must be later than the entry date and time.
-- **Vehicle validation:** Only bikes, cars, and trucks are accepted.
-
----
+*These prices and restrictions are illustrative and do not represent actual courier company policies.*
 
 ## 2. Algorithm
 
-1. **Start** the program.
-2. Define hourly rates for bikes, cars, and trucks.
-3. Define the daily fee limit, overnight fee, and penalty amount.
-4. Accept the vehicle category, entry date and time, and exit date and time.
-5. Validate the vehicle category and date/time formats.
-6. Check whether the exit time is later than the entry time. If not, display an error and stop.
-7. Calculate the total parking duration in hours.
-8. Round up partial hours to the next whole hour.
-9. Calculate the hourly parking charge using the vehicle category.
-10. Apply the daily fee limit.
-11. Count the midnight boundaries crossed and calculate the overnight fee.
-12. If the parking duration exceeds 72 hours, add the penalty.
-13. Calculate the final fee by adding the capped parking charge, overnight fees, and applicable penalty.
-14. Display the parking duration, parking charge, overnight fee, penalty, and total amount payable.
-15. **Stop** the program.
+1. Start the program.
+2. Input parcel weight and dimensions.
+3. Input the distance zone and delivery urgency.
+4. Ask whether the parcel contains prohibited or fragile items.
+5. Calculate the volumetric weight.
+6. Determine the billable weight using the greater of actual and volumetric weight.
+7. Calculate the base delivery charge for each courier service.
+8. Apply the appropriate urgency surcharge and handling fee.
+9. Check each service against:
+   - Maximum weight.
+   - Maximum dimension.
+   - Prohibited-item restrictions.
+   - Fragile-item handling requirements.
+   - Required delivery urgency.
+10. Mark each service as eligible or ineligible.
+11. Compare the charges of all eligible services.
+12. Select the eligible service with the lowest charge.
+13. Display the service comparison, rejection reasons, and recommended service.
+14. Stop the program.
 
-## 3. Flowchart
+## 3. Flowchart Using Mermaid
 
-```mermaid 
-
-    A([Start]) --> B[/Enter vehicle and entry/exit times/]
-    B --> C{Inputs valid?}
-    C -->|No| D[/Display error/]
-    D --> Z([Stop])
-    C -->|Yes| E[Calculate parking duration]
-    E --> F[Calculate hourly charge]
-    F --> G[Apply daily fee limit]
-    G --> H[Calculate overnight fee]
-    H --> I{Duration exceeds 72 hours?}
-    I -->|Yes| J[Add penalty]
-    I -->|No| K[Calculate final fee]
-    J --> K
-    K --> L[/Display parking bill/]
-    L --> Z
+```mermaid id="courier01"
+flowchart TD
+    A([Start]) --> B[/Enter parcel weight and dimensions/]
+    B --> C[/Enter distance zone and urgency/]
+    C --> D[/Declare fragile or prohibited contents/]
+    D --> E[Calculate volumetric weight]
+    E --> F[Calculate billable weight]
+    F --> G[Evaluate each courier service]
+    G --> H{Meets weight and size limits?}
+    H -- No --> I[Mark service ineligible]
+    H -- Yes --> J{Parcel contents permitted?}
+    J -- No --> I
+    J -- Yes --> K{Required handling supported?}
+    K -- No --> I
+    K -- Yes --> L[Calculate delivery charge]
+    L --> M[Add service to eligible options]
+    I --> N{More services?}
+    M --> N
+    N -- Yes --> G
+    N -- No --> O{Any eligible services?}
+    O -- No --> P[Display no eligible service]
+    O -- Yes --> Q[Select lowest-cost eligible service]
+    Q --> R[Display comparison and recommendation]
+    P --> S([Stop])
+    R --> S
 ```
-
-
 
 ## 5. Sample Input
 
 
-Enter vehicle type (Bike/Car/Truck): Car
-Enter entry date and time (YYYY-MM-DD HH:MM): 2026-10-29 22:30
-Enter exit date and time (YYYY-MM-DD HH:MM): 2026-10-30 02:15
+Enter parcel weight (kg): 4
+Enter length (cm): 30
+Enter width (cm): 20
+Enter height (cm): 15
+
+Enter distance zone (Local/Regional/National): Regional
+Enter required urgency (Standard/Express/Priority): Express
+
+Does the parcel contain fragile items? (yes/no): yes
+Does the parcel contain prohibited items? (yes/no): no
 
 
 ## 6. Sample Output
 
 
-======= SMART PARKING BILL =======
-Vehicle Type       : Car
-Parking Duration   : 3.75 hours
-Billable Hours     : 4
-Hourly Rate        : Rs. 50
-Parking Charge     : Rs. 200.00
-Overnight Fee      : Rs. 100.00
-Penalty             : Rs. 0.00
-----------------------------------
-Total Amount       : Rs. 300.00
-==================================
+COURIER CHARGE OPTIMIZATION
 
+Volumetric Weight: 1.80 kg
+Billable Weight: 4.00 kg
 
-### Calculation
+--- COURIER SERVICE COMPARISON ---
 
-- **Parking duration:** 3 hours 45 minutes = 3.75 hours.
-- **Billable hours:** 4 hours.
-- **Hourly parking charge:** 4 × ₹50 = ₹200.
-- **Overnight fee:** One midnight crossed × ₹100 = ₹100.
-- **Penalty:** ₹0 because the duration does not exceed 72 hours.
-- **Total fee:** ₹200 + ₹100 + ₹0 = **₹300**.
+Standard: Ineligible
+  - Fragile-item handling unavailable
+  - Does not meet express urgency
 
+Service: Express
+Base Charge: Rs. 280.00
+Urgency Surcharge: Rs. 70.00
+Handling Fee: Rs. 30.00
+Total Charge: Rs. 380.00
+Eligibility: Eligible
 
+Priority: Ineligible
+  - Does not meet priority urgency
 
-
+--- RECOMMENDATION ---
+Selected Service: Express
+Minimum Charge: Rs. 380.00
+cal logistics problems.
