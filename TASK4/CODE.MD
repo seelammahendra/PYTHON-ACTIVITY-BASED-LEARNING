@@ -17,14 +17,6 @@ The program performs the following operations:
 7. Identify the first interval in which the water level reaches or exceeds the specified threshold.
 8. Display a daily simulation report and the final water level.
 
-### Assumptions
-
-- All water quantities are measured in litres.
-- Inflow and outflow quantities must be non-negative.
-- The initial water level must be between zero and the tank's maximum capacity.
-- Excess water is discarded when the tank overflows.
-- If the requested outflow exceeds the available water, the shortage is recorded and the tank becomes empty.
-- The target threshold must be between zero and the tank's maximum capacity.
 
 ## 2. Algorithm
 
@@ -60,8 +52,6 @@ The program performs the following operations:
     K --> L([Stop])
 ```
 ## 5. Sample Input
-
-
 Enter tank capacity (litres): 1000
 Enter initial water level (litres): 500
 Enter target water level (litres): 800
