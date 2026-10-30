@@ -48,7 +48,6 @@ The program performs the following operations:
 ## 3. Flowchart 
 
 ```mermaid
-
     A([Start]) --> B[Enter student and examination details]
     B --> C[Input subject scores]
     C --> D[Calculate examination averages]
