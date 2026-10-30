@@ -1,63 +1,72 @@
-# Student Performance Trend Analysis Using Python
+
+# Fuel Consumption and Route Comparison Using Python
 
 ## 1. Problem Statement
 
-Student Performance Trend Analysis is a Python program designed to analyze students' examination scores across multiple examinations. It compares assessment scores, calculates improvements and declines, identifies consistently weak subjects, and classifies students according to predefined performance criteria.
+Develop a Python program to calculate fuel requirements and journey costs for several vehicles traveling a specified distance. The program should consider each vehicle’s mileage, fuel price, and required reserve fuel. It must determine the total fuel needed, estimate the journey cost, check whether each vehicle has enough fuel available, and identify the **lowest-cost feasible vehicle**.
 
-The program performs the following operations:
+### Requirements
+- Accept the journey distance in kilometres.
+- Accept details for multiple vehicles:
+  - Vehicle name
+  - Mileage in km/litre
+  - Fuel price per litre
+  - Available fuel in litres
+  - Required reserve fuel in litres
+- Calculate the fuel required for the journey, including the reserve.
+- Calculate the total journey fuel cost.
+- Determine whether each vehicle has enough fuel.
+- Identify the feasible vehicle with the lowest journey cost.
 
-1. Accept the number of students, subjects, and examinations.
-2. Input each student's scores for every subject across multiple examinations.
-3. Calculate the average score for each student in each examination.
-4. Compare consecutive examination scores to determine improvements or declines.
-5. Identify subjects in which a student consistently scores below the specified pass mark.
-6. Classify students according to their overall average scores.
-7. Display a performance report containing averages, trends, weak subjects, and student classifications.
-
-### Assumptions
-
-- Each examination is scored out of 100 marks per subject.
-- The pass mark for a subject is 40.
-- A student is classified according to their average score across all subjects in the latest examination.
-- Student classifications are:
-  - **Excellent:** 85–100
-  - **Good:** 70–84.99
-  - **Average:** 50–69.99
-  - **Needs Improvement:** Below 50
-- A subject is considered consistently weak if the student scores below 40 in every examination.
-- Improvement or decline is calculated by comparing the average score of consecutive examinations.
+**Assumption:** The vehicle must have enough fuel to complete the journey and retain its required reserve. Fuel cost is calculated using the total fuel required for the journey, excluding the reserve because the reserve is not consumed.
 
 ## 2. Algorithm
 
-1. Start the program.
-2. Input the number of students, subjects, and examinations.
-3. Set the pass mark and student classification criteria.
-4. For each student:
-   - Enter the student's name.
-   - Input scores for every subject across all examinations.
-   - Validate that each score is between 0 and 100.
-5. Calculate the average score for each examination.
-6. Compare consecutive examination averages to identify improvements or declines.
-7. Identify consistently weak subjects by checking whether the score is below 40 in every examination.
-8. Calculate the student's overall average for the latest examination.
-9. Classify the student as Excellent, Good, Average, or Needs Improvement.
-10. Display the performance analysis for each student.
-11. Repeat the process for all students.
-12. Stop the program.
+1. Start.
+2. Input the journey distance.
+3. Input the number of vehicles.
+4. For each vehicle:
+   - Enter its name, mileage, fuel price, available fuel, and reserve requirement.
+   - Calculate journey fuel:
+     \[
+     \text{Journey Fuel}=\frac{\text{Distance}}{\text{Mileage}}
+     \]
+   - Calculate total fuel required:
+     \[
+     \text{Total Fuel Required}=\text{Journey Fuel}+\text{Reserve Fuel}
+     \]
+   - Calculate journey cost:
+     \[
+     \text{Journey Cost}=\text{Journey Fuel}\times\text{Fuel Price}
+     \]
+   - Check whether available fuel is greater than or equal to total fuel required.
+5. Display the fuel requirement, journey cost, and feasibility of each vehicle.
+6. Among feasible vehicles, identify the one with the lowest journey cost.
+7. If no vehicle is feasible, display an appropriate message.
+8. Stop.
 
-## 3. Flowchart 
+## 3. Flowchart
 
 ```mermaid
-    A([Start]) --> B[Enter student and examination details]
-    B --> C[Input subject scores]
-    C --> D[Calculate examination averages]
-    D --> E[Compare examination results]
-    E --> F[Identify consistently weak subjects]
-    F --> G[Classify student by latest average]
-    G --> H[Display performance report]
-    H --> I{More students?}
-    I -->|Yes| C
-    I -->|No| J([Stop])
+flowchart TD
+    A([Start]) --> B[/Enter journey distance and number of vehicles/]
+    B --> C[Initialize vehicle counter]
+    C --> D[/Enter vehicle details/]
+    D --> E[Calculate journey fuel]
+    E --> F[Calculate total fuel including reserve]
+    F --> G[Calculate journey cost]
+    G --> H{Enough available fuel?}
+    H -- Yes --> I[Mark vehicle feasible]
+    H -- No --> J[Mark vehicle infeasible]
+    I --> K{More vehicles?}
+    J --> K
+    K -- Yes --> D
+    K -- No --> L{Any feasible vehicle?}
+    L -- Yes --> M[Find feasible vehicle with lowest cost]
+    L -- No --> N[Display no feasible vehicle]
+    M --> O[/Display comparison and lowest-cost option/]
+    N --> P([Stop])
+    O --> P
 ```
 
 
@@ -65,68 +74,60 @@ The program performs the following operations:
 ## 5. Sample Input
 
 
-Enter number of students: 2
-Enter number of subjects: 2
-Enter number of examinations: 3
-Enter subject 1 name: Mathematics
-Enter subject 2 name: Science
+FUEL CONSUMPTION AND ROUTE COMPARISON
+Enter journey distance (km): 300
+Enter number of vehicles: 3
 
-===== Student 1 =====
-Enter student name: Asha
-Mathematics - Exam 1 score: 80
-Mathematics - Exam 2 score: 85
-Mathematics - Exam 3 score: 90
-Science - Exam 1 score: 75
-Science - Exam 2 score: 80
-Science - Exam 3 score: 85
+Enter details for Vehicle 1
+Vehicle name: Car A
+Mileage (km/litre): 15
+Fuel price per litre (Rs.): 105
+Available fuel (litres): 30
+Required reserve (litres): 5
 
-===== Student 2 =====
-Enter student name: Rohan
-Mathematics - Exam 1 score: 35
-Mathematics - Exam 2 score: 38
-Mathematics - Exam 3 score: 30
-Science - Exam 1 score: 55
-Science - Exam 2 score: 50
-Science - Exam 3 score: 45
+Enter details for Vehicle 2
+Vehicle name: Car B
+Mileage (km/litre): 20
+Fuel price per litre (Rs.): 100
+Available fuel (litres): 25
+Required reserve (litres): 3
+
+Enter details for Vehicle 3
+Vehicle name: SUV C
+Mileage (km/litre): 10
+Fuel price per litre (Rs.): 105
+Available fuel (litres): 40
+Required reserve (litres): 5
 
 
 ## 6. Sample Output
-===== Student 1 =====
-
-Examination Performance:
-Exam 1 Average: 77.50
-Exam 2 Average: 82.50
-Exam 3 Average: 87.50
-
-Performance Trends:
-Exam 1 to Exam 2: Improved by 5.00 marks
-Exam 2 to Exam 3: Improved by 5.00 marks
-
-===== PERFORMANCE REPORT =====
-Student Name: Asha
-Latest Exam Average: 87.50
-Classification: Excellent
-Consistently Weak Subjects: None
-==============================
-
-===== Student 2 =====
-
-Examination Performance:
-Exam 1 Average: 45.00
-Exam 2 Average: 44.00
-Exam 3 Average: 37.50
-
-Performance Trends:
-Exam 1 to Exam 2: Declined by 1.00 marks
-Exam 2 to Exam 3: Declined by 6.50 marks
-
-===== PERFORMANCE REPORT =====
-Student Name: Rohan
-Latest Exam Average: 37.50
-Classification: Needs Improvement
-Consistently Weak Subjects: Mathematics
-==============================
-
-Student performance analysis completed.
 
 
+--- VEHICLE COMPARISON REPORT ---
+Journey Distance: 300.00 km
+
+Vehicle: Car A
+Journey Fuel: 20.00 litres
+Total Fuel Required (including reserve): 25.00 litres
+Journey Cost: Rs. 2100.00
+Status: Feasible
+
+Vehicle: Car B
+Journey Fuel: 15.00 litres
+Total Fuel Required (including reserve): 18.00 litres
+Journey Cost: Rs. 1500.00
+Status: Feasible
+
+Vehicle: SUV C
+Journey Fuel: 30.00 litres
+Total Fuel Required (including reserve): 35.00 litres
+Journey Cost: Rs. 3150.00
+Status: Feasible
+
+--- BEST OPTION ---
+Lowest-Cost Vehicle: Car B
+Estimated Journey Cost: Rs. 1500.00
+This vehicle has enough fuel, including its reserve.
+
+
+Thus, the program helps users compare vehicles and make economical journey-planning decisions.
