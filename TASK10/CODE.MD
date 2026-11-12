@@ -43,7 +43,7 @@ flowchart TD
     M --> N[Sort Teams by Points and Tie-break Values]
     N --> O[Display Final Rankings]
     O --> P([Stop])
-
+```
 ## 5. SAMPLE INPUT
 
 Enter number of teams: 4
