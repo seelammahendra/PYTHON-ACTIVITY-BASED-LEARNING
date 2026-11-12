@@ -22,7 +22,27 @@ The Sports Tournament Ranking System is used to store match results, calculate t
     - Highest goals scored.
 12. Display the final team rankings.
 13. Stop the program.
-
+## 3. Flow chart 
+``` mermaid 
+flowchart TD
+    A([Start]) --> B[Enter Number of Teams]
+    B --> C[Enter Team Names]
+    C --> D[Initialize Team Scores]
+    D --> E[Enter Number of Matches]
+    E --> F[Enter Match Details and Scores]
+    F --> G{Compare Team Scores}
+    G -->|Team 1 Wins| H[Award 3 Points to Team 1]
+    G -->|Team 2 Wins| I[Award 3 Points to Team 2]
+    G -->|Draw| J[Award 1 Point to Both Teams]
+    H --> K[Update Goals]
+    I --> K
+    J --> K
+    K --> L{All Matches Completed?}
+    L -->|No| F
+    L -->|Yes| M[Calculate Goal Difference]
+    M --> N[Sort Teams by Points and Tie-break Values]
+    N --> O[Display Final Rankings]
+    O --> P([Stop])
 
 ## 5. SAMPLE INPUT
 
