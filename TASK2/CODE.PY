@@ -1,10 +1,6 @@
 import math
-
-
 def calculate_volumetric_weight(length, width, height):
     return (length * width * height) / 5000
-
-
 def calculate_billable_weight(actual_weight, volumetric_weight):
     return max(actual_weight, volumetric_weight)
 
@@ -22,7 +18,6 @@ def calculate_charge(weight, zone, surcharge, handling_fee):
     total_charge = base_charge + urgency_charge + handling_fee
 
     return base_charge, urgency_charge, total_charge
-
 
 def main():
     print("COURIER CHARGE OPTIMIZATION")
